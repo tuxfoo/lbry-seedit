@@ -4,7 +4,7 @@ A simple script to help support the lbry network and your favourite creators on 
 
 # Why did I create it?
 
-The lbry desktop app is cool but it only runs when your computer is on and running the lbry app.
+The lbry desktop app is cool but it only runs when your computer is on and running the lbry app so this is not always useful.
 
 
 I have a NAS with some spare storage and a fibre connection; I wanted to use this to help seed content on the lbry network.
@@ -22,7 +22,7 @@ Give the client execute permissions.
 chmod +x /usr/local/bin/lbrynet
 ```
 
-You might want to use screen to  start the daemon
+You might want to use screen to start the daemon
 
 ```
 screen lbrynet start
@@ -38,9 +38,13 @@ lbry settings set wallet_dir /path/to/lbry/lbryum
 lbry settings set download_dir /path/to/lbry/downloads
 lbry settings set data_dir /path/to/lbry/data
 lbry settings set config /path/to/lbry/daemon_settings.yml
+lbry settings set max_connections_per_download 10
 ```
 
 Then you will want to add the channels you want to seed to the python script.
 Change the page count to change the amount of previous videos you would like to download.
 
 Finally, set up a cron job/scheduled task to run every couple of days to automate the process, only new videos will be downloaded.
+
+
+IF you are not using UPNP then you will want to open up TCP port 3333 and UDP port 4444
