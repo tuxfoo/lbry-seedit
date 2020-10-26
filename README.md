@@ -14,6 +14,7 @@ This script is intended to be used with the headless lbrynet client.
 # How do I use it?
 
 Download the latest lbrynet client and copy it to /usr/local/bin on your server/NAS
+https://github.com/lbryio/lbry-sdk
 
 
 Give the client execute permissions.
@@ -22,23 +23,23 @@ Give the client execute permissions.
 chmod +x /usr/local/bin/lbrynet
 ```
 
-You might want to use screen to start the daemon
+Create a service file for lbrynet
 
 ```
-screen lbrynet start
+cp lbrynet.service /etc/systemd/system/lbrynet.service
+systemctl enable lbrynet
+systemctl start lbrynet
 ```
-ctrl+d to detach
-
 
 You also may want to change some settings
 
 ```
-lbry settings get
-lbry settings set wallet_dir /path/to/lbry/lbryum
-lbry settings set download_dir /path/to/lbry/downloads
-lbry settings set data_dir /path/to/lbry/data
-lbry settings set config /path/to/lbry/daemon_settings.yml
-lbry settings set max_connections_per_download 10
+lbrynet settings get
+lbrynet settings set wallet_dir /path/to/lbry/lbryum
+lbrynet settings set download_dir /path/to/lbry/downloads
+lbrynet settings set data_dir /path/to/lbry/data
+lbrynet settings set config /path/to/lbry/daemon_settings.yml
+lbrynet settings set max_connections_per_download 10
 ```
 
 Then you will want to add the channels you want to seed to the python script.
@@ -47,4 +48,4 @@ Change the page count to change the amount of previous videos you would like to 
 Finally, set up a cron job/scheduled task to run every couple of days to automate the process, only new videos will be downloaded.
 
 
-IF you are not using UPNP then you will want to open up TCP port 3333 and UDP port 4444
+If you are not using UPNP then you will want to open up TCP port 3333 and UDP port 4444
