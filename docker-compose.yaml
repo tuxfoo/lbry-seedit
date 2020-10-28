@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+    seedit:
+        container_name: seedit
+        build:
+            context: ./seedit
+            target: dev
+        volumes:
+          - /seedit/core/:/home/lbrynet
+    lbry-sdk:
+        container_name: lbry-sdk
+        image: lbry/lbrynet:linux-x86_64-production
+        ports:
+          - "3333:3333"
+          - "4444:4444"
