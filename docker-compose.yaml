@@ -1,16 +1,28 @@
-version: "3.7"
+version: '3.4'
+
+networks:
+  lbry-network:
+    external: true
 
 services:
-    seedit:
-        container_name: seedit
-        build:
-            context: ./seedit
-            target: dev
-        volumes:
-          - /seedit/core/:/home/lbrynet
-    lbry-sdk:
-        container_name: lbry-sdk
-        image: lbry/lbrynet:linux-x86_64-production
-        ports:
-          - "3333:3333"
-          - "4444:4444"
+  lbrynet:
+    build:
+      context: ./lbrynet
+    networks:
+      - lbry-network
+    ports:
+      - "4444:4444"
+      - 50001:50001
+      - 5289:5280
+    volumes:
+      - ./lbrynet/core/data:/lbrynet
+      - ./lbrynet/core/home:/home/lbrynet
+  seedit:
+    networks:
+      - lbry-network
+    container_name: seedit
+    build:
+      context: ./seedit
+      target: dev
+    volumes:
+      - ./seedit/core:/home/seedit

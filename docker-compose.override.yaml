@@ -1,6 +1,0 @@
-# Things set in here only impact DEV environment
-version: "3.7"
-services:
-    seedit:
-        volumes:
-            - ./seedit/core:/seedit
