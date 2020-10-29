@@ -17,8 +17,6 @@ Make sure you have Docker and Docker-compose installed. You can find directions 
 
 You will first need to build the docker image by running `docker-compose build` from the repo base directory.
 
-The seedit docker container uses a docker netwoork that I am not sure is necessary but at the moment you need to run the following command to create it: `docker network create lbry-network`
-
 Once that finishes, run `docker-compose up -d` to start the container (the `-d` just runs it in the background).
 
 Then you will want to add the channels you want to seed to the python script.

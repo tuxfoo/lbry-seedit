@@ -1,16 +1,10 @@
 version: '3.4'
 
-networks:
-  lbry-network:
-    external: true
-
 services:
   lbrynet:
     container_name: seedit
     build:
       context: ./seedit
-    networks:
-      - lbry-network
     ports:
       - "4444:4444"
       - 50001:50001
