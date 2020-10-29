@@ -27,7 +27,6 @@ for pid in processes:
 
 for script in scripts:
     paths.append(os.path.abspath(script))
-
 # try:
 #     lbrynet = paths[0]
 # except IndexError:

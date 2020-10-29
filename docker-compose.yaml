@@ -16,5 +16,4 @@ services:
       - 50001:50001
       - 5289:5280
     volumes:
-      - ./seedit/core/data:/lbrynet
       - ./seedit/core/lbrynet_home:/home/lbrynet
