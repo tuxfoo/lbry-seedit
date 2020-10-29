@@ -6,7 +6,6 @@ A simple script to help support the lbry network and your favourite creators on 
 
 The lbry desktop app is cool but it only runs when your computer is on and running the lbry app so this is not always useful.
 
-
 I have a NAS with some spare storage and a fibre connection; I wanted to use this to help seed content on the lbry network.
 
 This script is intended to be used with the headless lbrynet client.
@@ -17,6 +16,8 @@ Make sure you have Docker and Docker-compose installed. You can find directions 
 - [Install docker-compose](https://docs.docker.com/compose/install/)
 
 You will first need to build the docker image by running `docker-compose build` from the repo base directory.
+
+The seedit docker container uses a docker netwoork that I am not sure is necessary but at the moment you need to run the following command to create it: `docker network create lbry-network`
 
 Once that finishes, run `docker-compose up -d` to start the container (the `-d` just runs it in the background).
 
