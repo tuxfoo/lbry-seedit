@@ -14,19 +14,20 @@ channels = [
 # Will only download last x amount of videos according to the following value
 page_size = 5
 
-processes = filter(lambda p: psutil.Process(p).name() == "lbrynet", psutil.pids())
+# processes = filter(lambda p: psutil.Process(p).name() == "lbrynet", psutil.pids())
 
-scripts = []
-paths = []
+# scripts = []
+# paths = []
 
-for pid in processes:
-    try:
-        scripts.append(psutil.Process(pid).cmdline()[0])
-    except IndexError:
-        pass
+# for pid in processes:
+#     try:
+#         scripts.append(psutil.Process(pid).cmdline()[0])
+#     except IndexError:
+#         pass
 
-for script in scripts:
-    paths.append(os.path.abspath(script))
+# for script in scripts:
+#     paths.append(os.path.abspath(script))
+
 # try:
 #     lbrynet = paths[0]
 # except IndexError:
@@ -39,19 +40,29 @@ for script in scripts:
 
 for channel in channels:
     print("Checking " + channel)
-    file = open("channel_data.json", "w")
-    subprocess.call(
-        "lbrynet "
-        + " claim search --channel="
-        + channel
-        + " --stream_type=video --page_size="
-        + str(page_size)
-        + " --order_by=release_time",
-        stdout=file,
-        shell=True,
+    command = [
+        "lbrynet",
+        "claim",
+        "search",
+        f"--channel={channel}",
+        "--stream_type=video",
+        f"--page_size={page_size}",
+        "--order_by=release_time",
+    ]
+    print(f"command: {' '.join(command)}")
+    process_output = subprocess.run(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
     )
-    with open("channel_data.json", "r") as read_file:
-        data = json.load(read_file)
-        for item in data["items"]:
-            print(item["canonical_url"])
-            subprocess.call("lbrynet get " + item["canonical_url"], shell=True)
+    deamon_not_running_msg = "Could not connect to daemon. Are you sure it's running?"
+
+    if process_output.returncode == 1:
+        print(f"Error: {process_output.stderr.decode()}")
+        sys.exit(1)
+    if deamon_not_running_msg in process_output.stdout.decode():
+        print(deamon_not_running_msg)
+        sys.exit(1)
+
+    data = json.loads(process_output.stdout.decode())
+    for item in data["items"]:
+        print(item["canonical_url"])
+        subprocess.call("lbrynet get " + item["canonical_url"], shell=True)

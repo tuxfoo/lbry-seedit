@@ -3,11 +3,14 @@ version: '3.4'
 services:
   lbrynet:
     container_name: seedit
+    entrypoint: ["lbrynet", "start", "--config", "/etc/lbry/daemon_settings.yml"]
     build:
       context: ./seedit
     ports:
-      - "4444:4444"
-      - "3333:3333"
-      - 5289:5280
+      - 4444:4444
+      - 3333:3333
+      - 5566:5566
+      - 5179:5179
+      - 5280:5280
     volumes:
       - ./seedit/core/lbrynet_home:/home/lbrynet

@@ -2,6 +2,6 @@ api: 0.0.0.0:5279
 streaming_server: 0.0.0.0:5280
 use_upnp: false
 wallet_dir: /home/lbrynet/wallet
-download_directory: /home/lbrynet/downloads
+download_directory: /home/lbrynet/Downloads
 data_dir: /home/lbrynet/data
 max_connections_per_download: 10
