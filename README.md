@@ -6,7 +6,6 @@ A simple script to help support the lbry network and your favourite creators on 
 
 The lbry desktop app is cool but it only runs when your computer is on and running the lbry app so this is not always useful.
 
-
 I have a NAS with some spare storage and a fibre connection; I wanted to use this to help seed content on the lbry network.
 
 This script is intended to be used with the headless lbrynet client.
