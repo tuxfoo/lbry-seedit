@@ -1,0 +1,4 @@
+seedit/core/lbrynet_home/.*
+seedit/core/lbrynet_home/data/*
+seedit/core/lbrynet_home/Downloads/*
+seedit/core/lbrynet_home/wallet/*

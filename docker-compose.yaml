@@ -6,8 +6,9 @@ networks:
 
 services:
   lbrynet:
+    container_name: seedit
     build:
-      context: ./lbrynet
+      context: ./seedit
     networks:
       - lbry-network
     ports:
@@ -15,14 +16,5 @@ services:
       - 50001:50001
       - 5289:5280
     volumes:
-      - ./lbrynet/core/data:/lbrynet
-      - ./lbrynet/core/home:/home/lbrynet
-  seedit:
-    networks:
-      - lbry-network
-    container_name: seedit
-    build:
-      context: ./seedit
-      target: dev
-    volumes:
-      - ./seedit/core:/home/seedit
+      - ./seedit/core/data:/lbrynet
+      - ./seedit/core/lbrynet_home:/home/lbrynet

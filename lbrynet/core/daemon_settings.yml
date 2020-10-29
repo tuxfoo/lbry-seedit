@@ -1,7 +1,0 @@
-api: 0.0.0.0:5279
-streaming_server: 0.0.0.0:5280
-use_upnp: false
-wallet_dir: /home/seedit/wallet
-download_directory: /home/seedit/downloads
-data_dir: /home/seedit/data
-max_connections_per_download: 10
