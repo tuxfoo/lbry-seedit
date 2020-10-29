@@ -7,7 +7,7 @@ services:
       context: ./seedit
     ports:
       - "4444:4444"
-      - 50001:50001
+      - "3333:3333"
       - 5289:5280
     volumes:
       - ./seedit/core/lbrynet_home:/home/lbrynet
