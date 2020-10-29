@@ -61,6 +61,6 @@ RUN python3.7 -m pip install -r requirements.txt
 ## Expose 5279 Port the daemon API will listen on
 ## the lbryumx aka Wallet port [Intended for internal use]
 # EXPOSE 4444 3333 5566 5179 50001 5280 5279
-
+EXPOSE 4444 3333 5279
 CMD ["/usr/bin/checkmount"]
 ENTRYPOINT ["tail", "-F", "/dev/null"]
