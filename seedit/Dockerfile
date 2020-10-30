@@ -23,7 +23,7 @@ RUN apt-get install --yes software-properties-common && \
     apt-get --fix-broken install  && \
     apt-get update && \
     apt-get install -y wget apt-transport-https && \
-    apt-get install -y build-essential && \
+    apt-get install -y build-essential cron && \
     apt-get install --yes libboost-all-dev
 
 RUN apt-get install -y build-essential \
@@ -52,8 +52,13 @@ WORKDIR /home/lbrynet
 
 ADD ./core/requirements.txt ./requirements.txt
 COPY ./core/daemon_settings.yml /etc/lbry/daemon_settings.yml
+COPY ./core/lbrycron /etc/cron.d/lbrycron
 RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip install -r requirements.txt
+RUN chmod 0644 /etc/cron.d/lbrycron
+RUN crontab /etc/cron.d/lbrycron
+RUN touch /var/log/cron.log
+CMD cron && tail -f /var/log/cron.log
 
 ## Daemon port [Intended for internal use]
 ## LBRYNET talks to peers on port 3333 [Intended for external use] this port is used to discover other lbrynet daemons with blobs.
