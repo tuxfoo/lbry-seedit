@@ -10,5 +10,6 @@ services:
       - 4444:4444
       - 3333:3333
       - 5279:5279
+#      - 5280:5280  #Uncoment if you want have access to streaming URL
     volumes:
       - ./seedit/core/lbrynet_home:/home/lbrynet
