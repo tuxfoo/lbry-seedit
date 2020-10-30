@@ -24,4 +24,9 @@ Change the page count to change the amount of previous videos you would like to 
 
 Now to start the python script run `make run-seedit` which will run the makefile target that runs the python script in the docker container.
 
-Finally, set up a cron job/scheduled task to run every couple of days to automate the process, only new videos will be downloaded.
+Cron job is running inside docker container inside seedit/core/lbrycron file you can adjust it if you do not want script to run every 12h.
+Editing cron will require you to rebuild container with `docker-compose build` then `docker-compose up -d`.
+
+# How to clean Download directory
+LBRY SDK downloads files to your disk and splits them into blobs that get seed to network. To save disk space you can clean Download directory with command `make clean`.
+This will download only mp4 and other files but will keep blobs for seeding.
