@@ -6,46 +6,27 @@ A simple script to help support the lbry network and your favourite creators on 
 
 The lbry desktop app is cool but it only runs when your computer is on and running the lbry app so this is not always useful.
 
-
 I have a NAS with some spare storage and a fibre connection; I wanted to use this to help seed content on the lbry network.
 
 This script is intended to be used with the headless lbrynet client.
 
 # How do I use it?
+Make sure you have Docker and Docker-compose installed. You can find directions on how to install them here:
+- [Install Docker](https://docs.docker.com/install/)
+- [Install docker-compose](https://docs.docker.com/compose/install/)
 
-Download the latest lbrynet client and copy it to /usr/local/bin on your server/NAS
-https://github.com/lbryio/lbry-sdk
+You will first need to build the docker image by running `docker-compose build` from the repo base directory.
 
-
-Give the client execute permissions.
-
-```
-chmod +x /usr/local/bin/lbrynet
-```
-
-Create a service file for lbrynet
-
-```
-cp lbrynet.service /etc/systemd/system/lbrynet.service
-systemctl enable lbrynet
-systemctl start lbrynet
-```
-
-You also may want to change some settings
-
-```
-lbrynet settings get
-lbrynet settings set wallet_dir /path/to/lbry/lbryum
-lbrynet settings set download_dir /path/to/lbry/downloads
-lbrynet settings set data_dir /path/to/lbry/data
-lbrynet settings set config /path/to/lbry/daemon_settings.yml
-lbrynet settings set max_connections_per_download 10
-```
+Once that finishes, run `docker-compose up -d` to start the container (the `-d` just runs it in the background).
 
 Then you will want to add the channels you want to seed to the python script.
 Change the page count to change the amount of previous videos you would like to download.
 
-Finally, set up a cron job/scheduled task to run every couple of days to automate the process, only new videos will be downloaded.
+Now to start the python script run `make run-seedit` which will run the makefile target that runs the python script in the docker container.
 
+Cron job is running inside docker container inside seedit/core/lbrycron file you can adjust it if you do not want script to run every 12h.
+Editing cron will require you to rebuild container with `docker-compose build` then `docker-compose up -d`.
 
-If you are not using UPNP then you will want to open up TCP port 3333 and UDP port 4444
+# How to clean Download directory
+LBRY SDK downloads files to your disk and splits them into blobs that get seed to network. To save disk space you can clean Download directory with command `make clean`.
+This will download only mp4 and other files but will keep blobs for seeding.
