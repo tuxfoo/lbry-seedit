@@ -11,9 +11,14 @@ I have a NAS with some spare storage and a fibre connection; I wanted to use thi
 This script is intended to be used with the headless lbrynet client.
 
 # How do I use it?
-Make sure you have Docker and Docker-compose installed. You can find directions on how to install them here:
+
+If you do not want the docker version, then you can just download the python script from seedit/core/lbrynet_home and set up a cron job for it.
+
+Make sure you have make, Docker and Docker-compose installed. You can find directions on how to install them here:
 - [Install Docker](https://docs.docker.com/install/)
 - [Install docker-compose](https://docs.docker.com/compose/install/)
+
+Clone this repo to the partition where you plan to store all the hosting data.
 
 You will first need to build the docker image by running `docker-compose build` from the repo base directory.
 
@@ -26,6 +31,8 @@ Now to start the python script run `make run-seedit` which will run the makefile
 
 Cron job is running inside docker container inside seedit/core/lbrycron file you can adjust it if you do not want script to run every 12h.
 Editing cron will require you to rebuild container with `docker-compose build` then `docker-compose up -d`.
+
+If you are not using UPNP then you will need to open up TCP port 3333 and UDP port 4444
 
 # How to clean Download directory
 LBRY SDK downloads files to your disk and splits them into blobs that get seed to network. To save disk space you can clean Download directory with command `make clean`.
