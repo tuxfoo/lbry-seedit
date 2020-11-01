@@ -1,5 +1,5 @@
 #!/bin/python3
-import json, subprocess, sys, time, os, psutil
+import json, subprocess, sys, time, os
 
 # Basic Script for Seeding LBRY Content
 
@@ -13,30 +13,65 @@ channels = [
 ]
 # Will only download last x amount of videos according to the following value
 page_size = 5
+# Max disk usage allowed in GB
+# Older videos will be deleted, set to 0 to disable
+max_disk_usage = 0
+# At which percent should older videos be deleted
+usage_percent = 90
+# Videos from these channels will not be deleted when disk is near capacity
+never_delete = [
+    "@TheLinuxGamer",
+    "@tuxfoo"
+]
 
-# processes = filter(lambda p: psutil.Process(p).name() == "lbrynet", psutil.pids())
+def get_usage():
+    path = "seedit/core/lbrynet_home/"
+    size = subprocess.check_output(['du','-s', path]).split()[0].decode('utf-8')
+    size = int(size)/1024/1024
+    return size
 
-# scripts = []
-# paths = []
-
-# for pid in processes:
-#     try:
-#         scripts.append(psutil.Process(pid).cmdline()[0])
-#     except IndexError:
-#         pass
-
-# for script in scripts:
-#     paths.append(os.path.abspath(script))
-
-# try:
-#     lbrynet = paths[0]
-# except IndexError:
-#     if os.path.isfile(sys.path[0] + "/lbrynet"):
-#         subprocess.Popen(sys.path[0] + "/lbrynet start", close_fds=True, shell=True)
-#         lbrynet = sys.path[0] + "/lbrynet"
-#         time.sleep(15)
-#     else:
-#         raise Exception("LBRY is not running, start LBRY or place lbrynet in my directory!")
+if max_disk_usage > 0:
+    size = get_usage()
+    # Once 90% of the allowed capacity has been reached, free some space.
+    if size / max_disk_usage * 100 >= usage_percent:
+        print("Near max allowed capacity; Will attempt to free space.")
+        command = [
+        "lbrynet",
+        "file",
+        "list",
+        "--page_size=1000",
+        ]
+        process_output = subprocess.run(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
+        )
+        videos = json.loads(process_output.stdout.decode())
+        # Sort by date added, might be better to use release time
+        sorted_videos = sorted(videos['items'], key=lambda k: int(k['metadata']['release_time']))
+        for video in sorted_videos:
+            # Get channel name
+            if video['channel_name'] == None:
+                command = [
+                "lbrynet",
+                "claim",
+                "search",
+                f"--claim_ids={video['claim_id']}"
+                ]
+                process_output = subprocess.run(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
+                )
+                channel_name = json.loads(process_output.stdout.decode())
+                video['channel_name'] = channel_name['items'][0]['signing_channel']['name']
+            if video['channel_name'] not in never_delete:
+                print("Deleting video from: " + video['channel_name'])
+                #lbry command to delete file
+                subprocess.call("lbrynet file delete --delete_from_download_dir --claim_id=" + video['claim_id'], shell=True)
+                #If enough space has been cleared then stop deleting videos.
+                if get_usage() / max_disk_usage * 100 <= usage_percent:
+                    break
+                else:
+                    print("Still need to clear more space; Deleting another Video...")
+            else:
+                print("Skipping Video from: " + video['channel_name'])
 
 for channel in channels:
     print("Checking " + channel)

@@ -37,3 +37,6 @@ If you are not using UPNP then you will need to open up TCP port 3333 and UDP po
 # How to clean Download directory
 LBRY SDK downloads files to your disk and splits them into blobs that get seed to network. To save disk space you can clean Download directory with command `make clean`.
 This will download only mp4 and other files but will keep blobs for seeding.
+
+# Disk storage management
+The python script also contains support for basic disk storage management. Change the value of "max_disk_usage" to enable this feature; it will delete the oldest videos first excluding videos from channels listed in "never_delete".
