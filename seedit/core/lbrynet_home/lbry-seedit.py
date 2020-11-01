@@ -25,7 +25,7 @@ never_delete = [
 ]
 
 def get_usage():
-    path = "seedit/core/lbrynet_home/"
+    path = "/home/lbrynet/"
     size = subprocess.check_output(['du','-s', path]).split()[0].decode('utf-8')
     size = int(size)/1024/1024
     return size
