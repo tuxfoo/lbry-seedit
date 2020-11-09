@@ -1,32 +1,17 @@
 #!/bin/python3
 import json, subprocess, sys, time, os, shutil
 
-# Basic Script for Seeding LBRY Content
+import seedit_config as cfg
 
-# Put the LBRY channel URL here
-# You can find it by going to a channel and clicking the "about" tab
-channels = [
-    "lbry://@TheLinuxGamer#f",
-    "lbry://@tuxfoo#e",
-    "lbry://@veritasium#f",
-    "lbry://@johnstossel#7",
-]
-# Will only download last x amount of videos according to the following value
-page_size = 5
-# Max disk usage allowed in GB
-# Older videos will be deleted, set to 0 to disable
-max_disk_usage = 0
-# At which percent should older videos be deleted
-usage_percent = 90
-# Videos from these channels will not be deleted when disk is near capacity
-never_delete = [
-    "@TheLinuxGamer",
-    "@tuxfoo"
-]
-# Only the blobs are required for seeding, clean downloads each time the script is run?
-clear_downloads = True
-# If you are using docker then leave this as /home/lbrynet/
-lbrynet_home = "/home/lbrynet/"
+# Basic Script for Seeding LBRY Content
+channels = cfg.channels
+page_size = cfg.page_size
+max_disk_usage = cfg.max_disk_usage
+usage_percent = cfg.usage_percent
+never_delete = cfg.never_delete
+clear_downloads = cfg.clear_downloads
+lbrynet_home = cfg.lbrynet_home
+
 
 def get_usage():
     size = subprocess.check_output(['du','-s', lbrynet_home]).split()[0].decode('utf-8')
@@ -50,7 +35,7 @@ def sort_files():
 def clean_downloads():
     path = lbrynet_home + "Downloads"
     if os.path.exists(path):
-        shutil.rmtree(dest, ignore_errors=True)
+        shutil.rmtree(path, ignore_errors=True)
 
 if max_disk_usage > 0:
     if os.path.exists(lbrynet_home):
@@ -86,6 +71,9 @@ if max_disk_usage > 0:
                         print("Still need to clear more space; Deleting another Video...")
                 else:
                     print("Skipping Video from: " + video['channel_name'])
+        if size / max_disk_usage * 100 >= usage_percent:
+            print("Failed to clear enough storage, Quiting")
+            quit()
 
 for channel in channels:
     print("Checking " + channel)
