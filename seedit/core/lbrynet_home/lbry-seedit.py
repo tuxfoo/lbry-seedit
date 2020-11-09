@@ -35,7 +35,7 @@ def sort_files():
 def clean_downloads():
     path = lbrynet_home + "Downloads"
     if os.path.exists(path):
-        shutil.rmtree(dest, ignore_errors=True)
+        shutil.rmtree(path, ignore_errors=True)
 
 if max_disk_usage > 0:
     if os.path.exists(lbrynet_home):
@@ -71,6 +71,9 @@ if max_disk_usage > 0:
                         print("Still need to clear more space; Deleting another Video...")
                 else:
                     print("Skipping Video from: " + video['channel_name'])
+        if size / max_disk_usage * 100 >= usage_percent:
+            print("Failed to clear enough storage, Quiting")
+            quit()
 
 for channel in channels:
     print("Checking " + channel)
