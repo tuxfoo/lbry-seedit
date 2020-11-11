@@ -50,7 +50,9 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
 
 WORKDIR /home/lbrynet
 
-ADD ./core/requirements.txt ./requirements.txt
+COPY ./core/lbrynet_home/lbry-seedit.py /seedit/lbry-seedit.py
+COPY ./core/lbrynet_home/seedit_config.py /seedit/seedit_config.py
+COPY ./core/requirements.txt ./requirements.txt
 COPY ./core/daemon_settings.yml /etc/lbry/daemon_settings.yml
 COPY ./core/lbrycron /etc/cron.d/lbrycron
 RUN python3.7 -m pip install --upgrade pip
@@ -66,6 +68,12 @@ CMD cron && tail -f /var/log/cron.log
 ## Expose 5279 Port the daemon API will listen on
 ## the lbryumx aka Wallet port [Intended for internal use]
 # EXPOSE 4444 3333 5566 5179 50001 5280 5279
-EXPOSE 4444 3333 5279
-CMD ["/usr/bin/checkmount"]
-ENTRYPOINT ["tail", "-F", "/dev/null"]
+EXPOSE 4444/udp 4444 3333 5279
+
+# Run the lbry command
+ENTRYPOINT ["/usr/bin/checkmount"]
+CMD ["lbrynet", "start", "--config", "/etc/lbry/daemon_settings.yml"]
+#ENTRYPOINT ["tail", "-F", "/dev/null"]
+
+# Where the lbrydata and seedit script are stored
+VOLUME ["/home/lbrynet"]
