@@ -68,7 +68,7 @@ CMD cron && tail -f /var/log/cron.log
 ## Expose 5279 Port the daemon API will listen on
 ## the lbryumx aka Wallet port [Intended for internal use]
 # EXPOSE 4444 3333 5566 5179 50001 5280 5279
-EXPOSE 4444 3333 5279
+EXPOSE 4444/udp 4444 3333 5279
 
 # Run the lbry command
 ENTRYPOINT ["/usr/bin/checkmount"]

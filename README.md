@@ -22,7 +22,7 @@ docker pull tuxfoo/lbry-seedit:latest
 ```
 Run the container replacing the destination path with to location of where you would like to store hosted data.
 ```
-docker run -v /path/to/lbrydata_dest:/home/lbrynet -d --name seedit lbry-seedit:latest
+docker run -v /path/to/lbrydata_dest:/home/lbrynet -d --name seedit tuxfoo/lbry-seedit:latest
 ```
 Edit the seedit_config.py file which will be stored in the destination volume from the previous command.
 
