@@ -1,1 +1,4 @@
+SHELL=/bin/bash
+BASH_ENV=/container.env
 0 */12 * * * root python3.7 /home/lbrynet/lbry-seedit.py >> /var/log/cron.log
+# Run the cron job every 12 hours
