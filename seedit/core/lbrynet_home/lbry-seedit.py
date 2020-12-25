@@ -102,6 +102,6 @@ for channel in channels:
     data = json.loads(process_output.stdout.decode())
     for item in data["items"]:
         print(item["canonical_url"])
-        subprocess.call("lbrynet get " + item["canonical_url"], shell=True)
+        subprocess.call("lbrynet get \'" + item["canonical_url"] + "\'", shell=True)
     if clear_downloads:
         clean_downloads()
