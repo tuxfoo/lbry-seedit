@@ -17,13 +17,17 @@ This script is intended to be used with the headless lbrynet client.
 You will first need to install docker.
 
 Download the prebuilt container.
+
 ```
 docker pull tuxfoo/lbry-seedit:latest
 ```
+
 Run the container replacing the destination path with to location of where you would like to store hosted data.
+
 ```
 docker run -v /path/to/lbrydata_dest:/home/lbrynet -d --name seedit tuxfoo/lbry-seedit:latest
 ```
+
 Edit the seedit_config.py file which will be stored in the destination volume from the previous command.
 
 You will want to change/add channels to host and set the optional storage limit.
