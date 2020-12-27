@@ -28,7 +28,9 @@ Run the container replacing the destination path with to location of where you w
 docker run -v /path/to/lbrydata_dest:/home/lbrynet -d --name seedit tuxfoo/lbry-seedit:latest
 ```
 
-Edit the seedit_config.py file which will be stored in the destination volume from the previous command.
+`seedit_config.py` will be shown in `/path/to/lbrydata_dest` after docker started successfully.
+
+Edit the `seedit_config.py` file which will be stored in the destination volume from the previous command.
 
 You will want to change/add channels to host and set the optional storage limit.
 
