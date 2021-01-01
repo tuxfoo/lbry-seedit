@@ -9,7 +9,7 @@ channels = [
     "lbry://@johnstossel#7",
 ]
 # Will only download last x amount of videos according to the following value
-page_size = 5
+max_vids = 5
 # Max disk usage allowed in GB
 # Older videos will be deleted, set to 0 to disable
 max_disk_usage = 0

@@ -5,7 +5,8 @@ import seedit_config as cfg
 
 # Basic Script for Seeding LBRY Content
 channels = cfg.channels
-page_size = cfg.page_size
+page_size = 20
+max_vids = cfg.max_vids
 max_disk_usage = cfg.max_disk_usage
 usage_percent = cfg.usage_percent
 never_delete = cfg.never_delete
@@ -77,6 +78,7 @@ if max_disk_usage > 0:
 
 for channel in channels:
     print("Checking " + channel)
+    seen_vids = 0
     command = [
         "lbrynet",
         "claim",
@@ -100,8 +102,51 @@ for channel in channels:
         sys.exit(1)
 
     data = json.loads(process_output.stdout.decode())
-    for item in data["items"]:
-        print(item["canonical_url"])
-        subprocess.call("lbrynet get " + item["canonical_url"], shell=True)
+    page_size = page_size
+    current_page = data["page"]
+    total_pages = data["total_pages"]
+    total_items = data["total_items"]
+
+    while seen_vids < max_vids or seen_vids < total_items:
+        # start at page 1 
+        if current_page <= total_pages:
+            command = [
+                "lbrynet",
+                "claim",
+                "search",
+                f"--channel={channel}",
+                "--stream_type=video",
+                f"--page_size={page_size}",
+                "--order_by=release_time",
+                f"--page={current_page}"
+            ]
+            print(f"command: {' '.join(command)}")
+            process_output = subprocess.run(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
+            )
+            deamon_not_running_msg = "Could not connect to daemon. Are you sure it's running?"
+
+            if process_output.returncode == 1:
+                print(f"Error: {process_output.stderr.decode()}")
+                sys.exit(1)
+            if deamon_not_running_msg in process_output.stdout.decode():
+                print(deamon_not_running_msg)
+                sys.exit(1)
+
+            data = json.loads(process_output.stdout.decode())
+
+            for item in data["items"]:
+                print(item["canonical_url"])
+                subprocess.call("lbrynet get " + item["canonical_url"], shell=True)
+
+                seen_vids += 1
+
+            # go to next page
+            current_page += 1
+        else:
+            raise Exception("ran out of pages, but not enough items")
+
+    print("reached max vids")
+
     if clear_downloads:
         clean_downloads()
