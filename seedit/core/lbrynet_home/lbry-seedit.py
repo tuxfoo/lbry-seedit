@@ -1,5 +1,5 @@
 #!/bin/python3
-import json, subprocess, sys, time, os, shutil
+import json, subprocess, sys, time, os, shutil, copy
 
 import seedit_config as cfg
 
@@ -37,6 +37,21 @@ def clean_downloads():
     path = lbrynet_home + "Downloads"
     if os.path.exists(path):
         shutil.rmtree(path, ignore_errors=True)
+
+def run_command(command):
+    print(f"command: {' '.join(command)}")
+    process_output = subprocess.run(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
+    )
+    deamon_not_running_msg = "Could not connect to daemon. Are you sure it's running?"
+
+    if process_output.returncode == 1:
+        print(f"Error: {process_output.stderr.decode()}")
+        sys.exit(1)
+    if deamon_not_running_msg in process_output.stdout.decode():
+        print(deamon_not_running_msg)
+        sys.exit(1)
+    return process_output
 
 if max_disk_usage > 0:
     if os.path.exists(lbrynet_home):
@@ -79,6 +94,8 @@ if max_disk_usage > 0:
 for channel in channels:
     print("Checking " + channel)
     seen_vids = 0
+
+    # define the command to use
     command = [
         "lbrynet",
         "claim",
@@ -88,51 +105,22 @@ for channel in channels:
         f"--page_size={page_size}",
         "--order_by=release_time",
     ]
-    print(f"command: {' '.join(command)}")
-    process_output = subprocess.run(
-        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
-    )
-    deamon_not_running_msg = "Could not connect to daemon. Are you sure it's running?"
 
-    if process_output.returncode == 1:
-        print(f"Error: {process_output.stderr.decode()}")
-        sys.exit(1)
-    if deamon_not_running_msg in process_output.stdout.decode():
-        print(deamon_not_running_msg)
-        sys.exit(1)
-
+    process_output = run_command(command)
     data = json.loads(process_output.stdout.decode())
-    page_size = page_size
+
     current_page = data["page"]
     total_pages = data["total_pages"]
     total_items = data["total_items"]
 
-    while seen_vids < max_vids or seen_vids < total_items:
-        # start at page 1 
+    while seen_vids < max_vids and seen_vids < total_items:
+        # start at page 1
         if current_page <= total_pages:
-            command = [
-                "lbrynet",
-                "claim",
-                "search",
-                f"--channel={channel}",
-                "--stream_type=video",
-                f"--page_size={page_size}",
-                "--order_by=release_time",
-                f"--page={current_page}"
-            ]
-            print(f"command: {' '.join(command)}")
-            process_output = subprocess.run(
-                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
-            )
-            deamon_not_running_msg = "Could not connect to daemon. Are you sure it's running?"
+            # create a new command for this page
+            page_command = copy.deepcopy(command)
+            page_command.append(f"--page={current_page}")
 
-            if process_output.returncode == 1:
-                print(f"Error: {process_output.stderr.decode()}")
-                sys.exit(1)
-            if deamon_not_running_msg in process_output.stdout.decode():
-                print(deamon_not_running_msg)
-                sys.exit(1)
-
+            process_output = run_command(page_command)
             data = json.loads(process_output.stdout.decode())
 
             for item in data["items"]:
@@ -144,7 +132,7 @@ for channel in channels:
             # go to next page
             current_page += 1
         else:
-            raise Exception("ran out of pages, but not enough items")
+            raise Exception("ran out of pages, but not enough items: halp")
 
     print("reached max vids")
 
