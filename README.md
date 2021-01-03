@@ -32,9 +32,15 @@ docker run -v /path/to/lbrydata_dest:/home/lbrynet -d --name seedit tuxfoo/lbry-
 
 Edit the `seedit_config.py` file which will be stored in the destination volume from the previous command.
 
-You will want to change/add channels to host and set the optional storage limit.
+Add/change channel to host, and set the storage limit in `seedit_config.py`.
+
+
+
+# Open ports
 
 If you are not using UPNP then you will need to open up TCP port 3333 and UDP port 4444 on your router/firewall.
+
+
 
 # Building it yourself
 
