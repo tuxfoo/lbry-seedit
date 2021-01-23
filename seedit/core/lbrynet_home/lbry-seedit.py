@@ -1,18 +1,19 @@
 #!/bin/python3
-import json, subprocess, sys, time, os, shutil, copy
-
-import seedit_config as cfg
+import json, subprocess, sys, time, os, shutil, copy, yaml
 
 # Basic Script for Seeding LBRY Content
-channels = cfg.channels
-page_size = 20
-max_vids = cfg.max_vids
-max_disk_usage = cfg.max_disk_usage
-usage_percent = cfg.usage_percent
-never_delete = cfg.never_delete
-clear_downloads = cfg.clear_downloads
-lbrynet_home = cfg.lbrynet_home
+with open("seedit_config.yaml", "r") as file:
+    cfg = yaml.load(file, Loader=yaml.FullLoader)
+    file.close()
 
+page_size = 20
+channels = cfg['channels']
+max_vids = cfg['max_vids']
+max_disk_usage = cfg['max_disk_usage']
+usage_percent = cfg['usage_percent']
+never_delete = cfg['never_delete']
+clear_downloads = cfg['clear_downloads']
+lbrynet_home = cfg['lbrynet_home']
 
 def get_usage():
     size = subprocess.check_output(['du','-s', lbrynet_home]).split()[0].decode('utf-8')
@@ -125,7 +126,7 @@ for channel in channels:
 
             for item in data["items"]:
                 print(item["canonical_url"])
-                subprocess.call("lbrynet get " + item["canonical_url"], shell=True)
+                subprocess.call("lbrynet get \'" + item["canonical_url"] + "\'", shell=True)
 
                 seen_vids += 1
 
