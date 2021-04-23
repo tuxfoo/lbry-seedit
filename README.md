@@ -17,18 +17,30 @@ This script is intended to be used with the headless lbrynet client.
 You will first need to install docker.
 
 Download the prebuilt container.
+
 ```
 docker pull tuxfoo/lbry-seedit:latest
 ```
+
 Run the container replacing the destination path with to location of where you would like to store hosted data.
+
 ```
 docker run -v /path/to/lbrydata_dest:/home/lbrynet -d --name seedit tuxfoo/lbry-seedit:latest
 ```
-Edit the seedit_config.py file which will be stored in the destination volume from the previous command.
 
-You will want to change/add channels to host and set the optional storage limit.
+`seedit_config.yaml` will be shown in `/path/to/lbrydata_dest` after docker started successfully.
+
+Edit the `seedit_config.yaml` file which will be stored in the destination volume from the previous command.
+
+Add/change channel to host, and set the storage limit in `seedit_config.yaml`.
+
+
+
+# Open ports
 
 If you are not using UPNP then you will need to open up TCP port 3333 and UDP port 4444 on your router/firewall.
+
+
 
 # Building it yourself
 
@@ -42,7 +54,7 @@ You will first need to build the docker image by running `docker-compose build` 
 
 Once that finishes, run `docker-compose up -d` to start the container (the `-d` just runs it in the background).
 
-Then you will want to add the channels you want to seed to seedit_config.py.
+Then you will want to add the channels you want to seed to seedit_config.yaml.
 Change the page count to change the amount of previous videos you would like to download.
 
 Now to start the python script run `make run-seedit` which will run the makefile target that runs the python script in the docker container.

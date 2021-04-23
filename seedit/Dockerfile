@@ -51,7 +51,7 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
 WORKDIR /home/lbrynet
 
 COPY ./core/lbrynet_home/lbry-seedit.py /seedit/lbry-seedit.py
-COPY ./core/lbrynet_home/seedit_config.py /seedit/seedit_config.py
+COPY ./core/lbrynet_home/seedit_config.yaml /seedit/seedit_config.yaml
 COPY ./core/requirements.txt ./requirements.txt
 COPY ./core/daemon_settings.yml /etc/lbry/daemon_settings.yml
 COPY ./core/lbrycron /etc/cron.d/lbrycron
