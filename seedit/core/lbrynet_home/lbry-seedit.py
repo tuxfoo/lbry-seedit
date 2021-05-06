@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/env python3
 import json, subprocess, sys, time, os, shutil, copy, yaml
 
 # Basic Script for Seeding LBRY Content
